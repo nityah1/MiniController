@@ -1,0 +1,60 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd">
+ 
+    <global-method-security pre-post-annotations="enabled"/>
+	
+	<http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/login" access="permitAll" />
+        <intercept-url pattern="/logout" access="permitAll" />
+        <intercept-url pattern="/register" access="permitAll" />
+        <intercept-url pattern="/main" access="isAuthenticated()" />
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+       <form-login 
+		    login-page="/login" 
+		    default-target-url="/main" 
+		    always-use-default-target="true"      
+			authentication-failure-url="/login?error" 
+			username-parameter="j_username"
+			password-parameter="j_password"/>
+        <logout logout-success-url="/login" invalidate-session="true" logout-url="/logout"/>
+        <!-- enable csrf protection 
+		<csrf/-->
+    </http>
+    
+	<authentication-manager>
+        <authentication-provider ref="customAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="customAuthenticationProvider"
+	    class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" >
+	    <beans:property name="userDetailsService" ref="userDetailsService" />
+	</beans:bean>
+	
+	
+	
+ 	<!-- authentication-manager>
+		<authentication-provider>
+		  <user-service>
+			<user name="nitya" password="123456" authorities="ROLE_USER" />
+		  </user-service>
+		</authentication-provider>
+	</authentication-manager>
+ 
+	<authentication-manager>
+        <authentication-provider ref="daoAuthenticationProvider">
+		<password-encoder hash="sha">
+			<salt-source user-property="username"/>
+		</password-encoder>
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="daoAuthenticationProvider"
+	    class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" >
+	    <beans:property name="userDetailsService" ref="userDetailsService" />
+	</beans:bean-->
+</beans:beans>
